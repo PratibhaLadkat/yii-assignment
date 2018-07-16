@@ -36,6 +36,7 @@ class Profile extends CActiveRecord
 			array('first_name, last_name', 'length', 'max'=>30),
 			array('city', 'length', 'max'=>10),
 			array('email', 'length', 'max'=>50),
+            array('email', 'email'),
             array('email', 'unique', 'message'=>'email already exists. try new'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

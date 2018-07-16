@@ -105,10 +105,14 @@ class User extends CActiveRecord
         {
             $criteria->compare('userTags.tag_id', $_GET['User']['tagIds'], true);
         }
+        $criteria->group = 't.id';
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
+        return new CActiveDataProvider($this, array(
+		    'criteria'=>$criteria,
+            'pagination'=>array(
+                'pageSize'=>10,
+            ),
+        ));
 	}
 
 	/**
@@ -143,6 +147,9 @@ class User extends CActiveRecord
         return parent::save($runValidation=true,$attributes=null);
     }
 
+    /**
+     * @return array
+     */
     public function getTagList()
     {
         if ([] == $this->userTags)
@@ -151,7 +158,9 @@ class User extends CActiveRecord
         }
         $result =[];
 
-        foreach ($this->userTags as $userTag)
+        $userTags = UserTags::model()->with('tags')->findAll('user_id = :userId', [':userId' => $this->id]);
+      //  echo "<pre>"; print_r($userTags);exit;
+        foreach ($userTags as $userTag)
         {
             $result[$userTag->tags->id] = $userTag->tags->name;
         }

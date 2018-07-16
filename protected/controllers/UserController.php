@@ -155,19 +155,19 @@ class UserController extends Controller
 
             if ($model->save(false) && $model->profile->save(false))
             {
-                if(!empty(array_filter($_POST['User']['tagIds'])))
-                {
-                    $tagIds = array_filter($_POST['User']['tagIds']);
+                if(!empty($_POST['User']['tagIds'])) {
+                    $tagIds = $_POST['User']['tagIds'];
 
                     $diffTagId = array_diff($model->tagIds, $tagIds);
                     $newTagId = array_diff($tagIds, $model->tagIds);
 
                     foreach ($diffTagId as $tagId)
                     {
-                        if ($userTags = UserTags::model()->findByAttributes(['user_id' => $model->id, 'tag_id' => $tagId]))
-                        {
-                            $userTags->delete();
-                        }
+                        UserTags::model()->deleteAll('user_id = :userId AND tag_id = :tagId',
+                            array(
+                                ':userId' => $model->id,
+                                ':tagId' =>  $tagId
+                            ));
                     }
 
                     UserTags::model()->saveTags($newTagId, $model->id);

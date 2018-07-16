@@ -58,7 +58,7 @@
     <div class="row">
         <label>Tags:</label>
         <?php $list = CHtml::listData(Tags::model()->findAll(array('select'=>'id, name', 'order'=>'name')), 'id', 'name');
-            echo $form->dropDownList($model, 'tagIds', $list, array('prompt' => 'Select', 'multiple' => true, 'selected' => 'selected'));
+            echo $form->dropDownList($model, 'tagIds', $list, array('multiple' => true, 'selected' => 'selected'));
          ?>
     </div>
 

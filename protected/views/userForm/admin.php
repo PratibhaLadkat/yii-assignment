@@ -5,7 +5,6 @@ $this->renderPartial('userMenu');
 <?php $this->widget('zii.widgets.grid.CGridView', array(
     'id'=>'user-grid',
     'dataProvider'=>$model->search(),
-    'filter'=> $model->profileData,
     'pager'=>array(
         'class'=>'CLinkPager',
         'pageSize' => 10,
@@ -15,6 +14,7 @@ $this->renderPartial('userMenu');
         'prevPageLabel'=>'prev',
         'header'=>'',
     ),
+    'filter'=> $model->profileData,
     'columns'=>array(
         array(
             'name' => 'id',
