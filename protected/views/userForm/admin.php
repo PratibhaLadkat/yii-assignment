@@ -14,7 +14,7 @@ $this->renderPartial('userMenu');
         'prevPageLabel'=>'prev',
         'header'=>'',
     ),
-    'filter'=> $model->profileData,
+    'filter'=> $model,//->profileData,
     'columns'=>array(
         array(
             'name' => 'id',
@@ -24,23 +24,26 @@ $this->renderPartial('userMenu');
         array(
             'name'=> 'username',
             'value' => '$data->username',
-            'filter' => '',
         ),
         array(
             'name' => 'first_name',
             'value' => '$data->profile->first_name',
+            'filter' => CHtml::textField('Profile[first_name]', $model->profileData->first_name)
         ),
         array(
             'name' => 'last_name',
             'value' => '$data->profile->last_name',
+            'filter' => CHtml::textField('Profile[last_name]', $model->profileData->last_name)
         ),
         array(
             'name' => 'city',
             'value' => '$data->profile->city',
+            'filter' => CHtml::textField('Profile[city]', $model->profileData->city)
         ),
         array(
             'name' => 'email',
-            'value' => '$data->profile->email'
+            'value' => '$data->profile->email',
+            'filter' => CHtml::textField('Profile[email]', $model->profileData->email)
         ),
         array(
             'name' => 'tags',

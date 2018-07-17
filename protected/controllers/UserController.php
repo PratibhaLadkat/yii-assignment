@@ -191,8 +191,6 @@ class UserController extends Controller
     public function actionDelete($id)
     {
         $model = $this->loadModel($id);
-
-        //echo "<pre>"; print_r($model);exit;
         $model->profile->delete();
 
         if([] !== $model->userTags)

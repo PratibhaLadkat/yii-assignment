@@ -40,7 +40,7 @@ class User extends CActiveRecord
             array('username', 'unique', 'message'=>'User name already exists. Try new'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, username, password', 'safe', 'on'=>'search'),
+			array('username, password', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -152,14 +152,10 @@ class User extends CActiveRecord
      */
     public function getTagList()
     {
-        if ([] == $this->userTags)
-        {
-            return [];
-        }
         $result =[];
 
         $userTags = UserTags::model()->with('tags')->findAll('user_id = :userId', [':userId' => $this->id]);
-      //  echo "<pre>"; print_r($userTags);exit;
+
         foreach ($userTags as $userTag)
         {
             $result[$userTag->tags->id] = $userTag->tags->name;

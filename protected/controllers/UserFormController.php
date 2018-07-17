@@ -49,6 +49,7 @@ class UserFormController extends Controller
     public function actionCreate()
     {
         $userForm = new UserForm();
+        $userForm->setScenario('insert');
 
         if(isset($_POST['UserForm']))
         {
@@ -75,14 +76,17 @@ class UserFormController extends Controller
     public function actionUpdate($id)
     {
         $userForm = new UserForm();
+        $userForm->setScenario('update');
         $userForm->setValues($id);
 
         if(isset($_POST['UserForm']))
         {
             $userForm->attributes = $_POST['UserForm'];
             $userForm->tagIds = !empty($_POST['UserForm']['tagIds']) ? $_POST['UserForm']['tagIds'] : [];
-            $userForm->save();
-            $this->redirect(array('index'));
+            if ($userForm->validate()) {
+                $userForm->save();
+                $this->redirect(array('view', 'id' => $id));
+            }
         }
 
         $this->render('update',array(
@@ -116,5 +120,65 @@ class UserFormController extends Controller
         $model = User::model()->with('profile','userTags')->findByPk($id);
 
         return $model;
+    }
+
+    /**
+     * Delete user and respected details
+     *
+     * @param $id
+     */
+    public function actionDelete($id)
+    {
+        $model = $this->loadModel($id);
+        $model->profile->delete();
+
+        if([] !== $model->userTags)
+        {
+            foreach($model->userTags as $userTag) {
+                $userTag->delete();
+            }
+        }
+
+        $model->delete();
+
+        if(!isset($_GET['ajax']))
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+    }
+
+    /**
+     * @return array action filters
+     */
+    public function filters()
+    {
+        return array(
+            'accessControl', // perform access control for CRUD operations
+            'postOnly + delete', // we only allow deletion via POST request
+        );
+    }
+
+    /**
+     * Specifies the access control rules.
+     * This method is used by the 'accessControl' filter.
+     * @return array access control rules
+     */
+    public function accessRules()
+    {
+        return array(
+            array('allow',  // allow all users to perform 'index' and 'view' actions
+                'actions'=>array('index','view'),
+                'users'=>array('*'),
+            ),
+            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+                'actions'=>array('create','update'),
+                'users'=>array('@'),
+            ),
+            array('allow', // allow admin user to perform 'admin' and 'delete' actions
+                'actions'=>array('admin','delete'),
+                'users'=>array('admin'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
     }
 }

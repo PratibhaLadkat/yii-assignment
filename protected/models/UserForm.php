@@ -27,7 +27,15 @@ class UserForm extends CFormModel
         return array(
             array('username, password', 'required'),
             array('username, password', 'length', 'max'=>128),
-            array('username', 'unique', 'className'=> 'User', 'message'=>'User name already exists. Try new'),
+            array('username', 'unique', 'className'=> 'User','message'=>'User name already exists. Try new', 'on' => 'insert'),
+            array('username', 'unique', 'className'=> 'User','message'=>'User name already exists. Try new', 'on' => 'update',
+                    'caseSensitive' => true,
+                    'criteria' => array(
+                        'alias' => 'u',
+                        'condition' => 'u.id != :userId',
+                        'params' => array(':userId' => $this->userId)
+                    )
+                ),
             array('id, username, password', 'safe', 'on'=>'search'),
             array('firstName', 'required'),
             array('lastName', 'required'),
@@ -35,7 +43,13 @@ class UserForm extends CFormModel
             array('city', 'length', 'max'=>10),
             array('email', 'length', 'max'=>50),
             array('email', 'email'),
-            array('email', 'unique','className'=> 'Profile', 'message'=>'Email already exists. Try new'),
+            array('email', 'unique','className'=> 'Profile', 'message'=>'Email already exists. Try new','on' => 'insert' ),
+            array('email', 'unique','className'=> 'Profile', 'message'=>'Email already exists. Try new', 'on' => 'update',
+                'criteria' => array(
+                    'condition' => 't.id != :profileId',
+                    'params' => array(':profileId' => $this->profileId)
+                )
+            ),
             array('firstName, lastName, city, email', 'safe', 'on'=>'search'),
         );
     }
@@ -58,7 +72,7 @@ class UserForm extends CFormModel
         // Save user details
         $user = empty(isset($this->userData)) ? new User : $this->userData;
         $user->id = $this->userId;
-        $user->username = $this->username;
+        $user->username = trim($this->username);
         $user->password = $this->password;
         $user->save(false);
         $this->userId = $user->id;
@@ -72,6 +86,7 @@ class UserForm extends CFormModel
         $profile->last_name = $this->lastName;
         $profile->city = $this->city;
         $profile->email = $this->email;
+
 
         $profile->save(false);
 
