@@ -20,10 +20,6 @@
     <br />
 
     <b>UserTags : </b>
-    <?php if ([] != $data['userTags']) {
-        foreach ($data->userTags as $userTags) {
-            echo CHtml::encode($userTags->tags->name).',';
-        }
-    }?>
+    <?php echo $data->getTags();?>
     <br />
 </div>

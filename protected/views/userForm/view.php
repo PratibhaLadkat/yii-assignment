@@ -15,6 +15,7 @@ $this->renderPartial('userMenu');
 <?php $this->widget('zii.widgets.CDetailView', array(
     'data'=>$model,
     'attributes'=>array(
+        'username',
         'profile.first_name',
         'profile.last_name',
         'profile.city',

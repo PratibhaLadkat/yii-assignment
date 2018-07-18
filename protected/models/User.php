@@ -24,7 +24,7 @@ class User extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'user';
+		return 'tbl_user';
 	}
 
 	/**
@@ -85,8 +85,10 @@ class User extends CActiveRecord
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 		$criteria=new CDbCriteria;
+		$criteria->select = 't.*, profile.*';
+        //$criteria->with = array( 'profile','userTags','userTags.tags');
 
-        $criteria->with = array( 'profile', 'userTags');
+        $criteria->join = 'Inner Join profile "profile" ON "profile".user_id = t.id Left Join tbl_user_tags "userTags" On "userTags".user_id = t.id';
         $criteria->together = true;
 		$criteria->compare('id',$this->id);
 		$criteria->compare('username',$this->username,true);
@@ -103,14 +105,15 @@ class User extends CActiveRecord
 
         if (!empty($_GET['User']['tagIds']))
         {
-            $criteria->compare('userTags.tag_id', $_GET['User']['tagIds'], true);
+            $criteria->compare('"userTags"."tag_id"', $_GET['User']['tagIds']);
         }
-        $criteria->group = 't.id';
-
+        $criteria->order = 't.id';
+        $criteria->group = 't.id, "profile"."id", "userTags"."user_id"';//, "tags"."id"';
+//print_r($criteria);exit;
         return new CActiveDataProvider($this, array(
 		    'criteria'=>$criteria,
             'pagination'=>array(
-                'pageSize'=>10,
+                'pageSize'=>3,
             ),
         ));
 	}

@@ -27,6 +27,8 @@ class UserForm extends CFormModel
         return array(
             array('username, password', 'required'),
             array('username, password', 'length', 'max'=>128),
+          //  array('username', 'match', 'pattern' => '/^[A-Za-z0-9_]+$/u'),
+            array('username', 'validateUserName', 'message'=>'Space not allowed'),
             array('username', 'unique', 'className'=> 'User','message'=>'User name already exists. Try new', 'on' => 'insert'),
             array('username', 'unique', 'className'=> 'User','message'=>'User name already exists. Try new', 'on' => 'update',
                     'caseSensitive' => true,
@@ -52,6 +54,26 @@ class UserForm extends CFormModel
             ),
             array('firstName, lastName, city, email', 'safe', 'on'=>'search'),
         );
+    }
+
+    /**
+     * Check username allow only alphanumeric ans underscore
+     *
+     * @param $attribute
+     * @param $params
+     * @return bool
+     */
+    public function validateUserName($attribute,$params)
+    {
+        preg_match('/^[A-Za-z0-9_]+$/u', $this->username, $matches);
+
+        if([] == $matches) {
+            $this->addError($attribute, 'Characters allowed : alpha numeric and under score');
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

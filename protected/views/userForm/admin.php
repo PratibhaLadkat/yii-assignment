@@ -7,20 +7,15 @@ $this->renderPartial('userMenu');
     'dataProvider'=>$model->search(),
     'pager'=>array(
         'class'=>'CLinkPager',
-        'pageSize' => 10,
+        'pageSize' => 2,
         'firstPageLabel'=>'first',
         'lastPageLabel'=>'last',
         'nextPageLabel'=>'next',
         'prevPageLabel'=>'prev',
         'header'=>'',
     ),
-    'filter'=> $model,//->profileData,
+    'filter'=> $model,
     'columns'=>array(
-        array(
-            'name' => 'id',
-            'value' =>'$data->id',
-            'filter' => ''
-        ),
         array(
             'name'=> 'username',
             'value' => '$data->username',
