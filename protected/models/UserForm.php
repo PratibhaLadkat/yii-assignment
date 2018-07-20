@@ -132,6 +132,27 @@ class UserForm extends CFormModel
 
         UserTags::model()->saveTags($tagIdsToSave, $user->id);
 
+        $images = CUploadedFile::getInstancesByName('images');
+
+        // proceed if the images have been set
+        if (isset($images) && count($images) > 0) {
+
+            // go through each uploaded image
+            foreach ($images as $image => $pic) {
+                $filename = $this->userId . $pic->name;
+
+                if ($pic->saveAs(Yii::getPathOfAlias('webroot') . '/images/profile/' . $filename)) {
+                    // add it to the main model now
+                    $img_add = new Picture();
+                    $img_add->filename = $filename; //it might be $img_add->name for you, filename is just what I chose to call it in my model
+                    $img_add->user_id = $this->userId; // this links your picture model to the main model (like your user, or profile model)
+
+                    $img_add->save(); // DONE
+                } else
+                     throw new CException('error uploading image');   // handle the errors here, if you want
+            }
+        }
+
         return true;
     }
 

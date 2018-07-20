@@ -12,11 +12,12 @@ $this->renderPartial('userMenu');
 <div class="form">
 
     <?php $form=$this->beginWidget('CActiveForm', array(
-        'id'=>'user-create-form',
+        'id'=>'user-form',
         'enableClientValidation'=>false,
         'clientOptions'=>array(
             'validateOnSubmit'=>true,
         ),
+        'htmlOptions'=>array('enctype'=>'multipart/form-data')
     )); ?>
 
     <p class="note">Fields with <span class="required">*</span> are required.</p>
@@ -66,7 +67,23 @@ $this->renderPartial('userMenu');
         echo $form->dropDownList($model, 'tagIds', $list, array('multiple' => true, 'selected' => 'selected'));
         ?>
     </div>
-
+    <div class="row">
+        <?php echo $form->labelEx($model,'photos'); ?>
+        <?php
+        /*$this->widget('xupload.XUpload', array(
+            'url' => Yii::app()->createUrl("/images/upload"),
+            'model' => $model,
+            'attribute' => 'file',
+            'multiple' => true,
+        ));*/
+        $this->widget('CMultiFileUpload', array(
+            'name' => 'images[]',
+            'accept' => 'jpeg|jpg|gif|png', // useful for verifying files
+            'duplicate' => 'Duplicate file!', // useful, i think
+            'denied' => 'Invalid file type', // useful, i think
+        ));
+        ?>
+    </div>
     <div class="row buttons">
         <?php echo CHtml::submitButton('Save'); ?>
     </div>
